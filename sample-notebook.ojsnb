@@ -1,0 +1,90 @@
+{
+    "id": "1e741046-6fce-43e3-97c4-f3749682e215",
+    "files": [],
+    "nodes": [
+        {
+            "id": "b70883c7-6c7b-4aa1-bbad-594de46acd58",
+            "name": "",
+            "value": "d3 = require(\"d3@6\")",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "8823be42-f2a1-4b87-9243-dcaa23dc3fad",
+            "name": "",
+            "value": "margin = ({top: 20, right: 0, bottom: 30, left: 40})",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "afcdbb68-2215-4905-a4e7-a82803ff3989",
+            "name": "",
+            "value": "height = 500",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "07e87c2f-b177-4a35-bae6-6b05e9263570",
+            "name": "",
+            "value": "data = d3.csvParse(await FileAttachment(\"alphabet.csv\").text(), ({letter, frequency}) => ({name: letter, value: +frequency})).sort((a, b) => b.value - a.value)",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "1dac28fe-dfed-4426-870f-a42899276579",
+            "name": "",
+            "value": "x = d3.scaleBand()\n    .domain(data.map(d => d.name))\n    .range([margin.left, width - margin.right])\n    .padding(0.1)",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "469944d8-39b9-4d06-ba0b-5547d0de6a91",
+            "name": "",
+            "value": "y = d3.scaleLinear()\n    .domain([0, d3.max(data, d => d.value)]).nice()\n    .range([height - margin.bottom, margin.top])",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "06bf9928-2211-4aa6-819d-5442e839ed12",
+            "name": "",
+            "value": "xAxis = g => g\n    .attr(\"transform\", `translate(0,${height - margin.bottom})`)\n    .call(d3.axisBottom(x).tickSizeOuter(0))",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "12bfbafa-a71a-42bb-95cf-c99827bb832c",
+            "name": "",
+            "value": "yAxis = g => g\n    .attr(\"transform\", `translate(${margin.left},0)`)\n    .call(d3.axisLeft(y))\n    .call(g => g.select(\".domain\").remove())",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "045bebca-d54f-4b8a-8fea-106da1289e6c",
+            "name": "",
+            "value": "function zoom(svg) {\n  const extent = [[margin.left, margin.top], [width - margin.right, height - margin.top]];\n\n  svg.call(d3.zoom()\n      .scaleExtent([1, 8])\n      .translateExtent(extent)\n      .extent(extent)\n      .on(\"zoom\", zoomed));\n\n  function zoomed(event) {\n    x.range([margin.left, width - margin.right].map(d => event.transform.applyX(d)));\n    svg.selectAll(\".bars rect\").attr(\"x\", d => x(d.name)).attr(\"width\", x.bandwidth());\n    svg.selectAll(\".x-axis\").call(xAxis);\n  }\n}",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "94293b84-3460-4518-8f72-eaab28c97c89",
+            "name": "",
+            "value": "chart = {\n  const svg = d3.create(\"svg\")\n      .attr(\"viewBox\", [0, 0, width, height])\n      .call(zoom);\n\n  svg.append(\"g\")\n      .attr(\"class\", \"bars\")\n      .attr(\"fill\", \"steelblue\")\n    .selectAll(\"rect\")\n    .data(data)\n    .join(\"rect\")\n      .attr(\"x\", d => x(d.name))\n      .attr(\"y\", d => y(d.value))\n      .attr(\"height\", d => y(0) - y(d.value))\n      .attr(\"width\", x.bandwidth());\n\n  svg.append(\"g\")\n      .attr(\"class\", \"x-axis\")\n      .call(xAxis);\n\n  svg.append(\"g\")\n      .attr(\"class\", \"y-axis\")\n      .call(yAxis);\n\n  return svg.node();\n}",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "7ab8799f-c132-441c-806b-f4a5f4711eaa",
+            "name": "",
+            "value": "d3 = require(\"d3-fetch@1\")",
+            "mode": "js",
+            "outputs": []
+        },
+        {
+            "id": "ad7ec176-97bd-4726-a9c9-bf5f5ee73cb5",
+            "name": "",
+            "value": "slider = html`<input type=range>`",
+            "mode": "js",
+            "outputs": []
+        }
+    ]
+}
